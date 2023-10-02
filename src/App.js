@@ -1,25 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Navbar from './Navbar';
+import Pokedex from './Pokedex';
+import Regions from './Regions';
+import Moves from './Moves';
+import Learn from './About';
+import Contact from './ContactUs';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1>
-          Hola
-        </h1>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <Router>
+            <Navbar />
+            <Switch>
+                <Route path="/pokedex" component={Pokedex} />
+                <Route path="/regiones" component={Regions} />
+                <Route path="/movimientos" component={Moves} />
+                <Route path="/aprende" component={Learn} />
+                <Route path="/contactanos" component={Contact} />
+                <Route path="/" exact component={Pokedex} /> {/* Página principal */}
+            </Switch>
+        </Router>
+    );
 }
 
 export default App;
+
