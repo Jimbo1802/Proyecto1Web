@@ -1,0 +1,43 @@
+/* components/PokemonCard.css */
+.pokemon-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 200px; /* Reducir el ancho mínimo un poco */
+    margin: 1.0%;
+    gap: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    flex: 0 0 calc(25% - 16px); /* Esto hará que las tarjetas ocupen la mitad del ancho del contenedor, menos 16px para el margen */
+    margin: 8px; /* Añade un margen para separar las tarjetas */
+}
+
+
+
+.pokemon-stats {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.pokemon-card img {
+    height: auto;
+    max-width: 100%; /* Asegura que la imagen no exceda el ancho de la tarjeta, pero no la estira */
+}
+
+.pokemon-types {
+    display: flex;
+    gap: 10px;
+}
+
+.pokemon-stats span:not(:last-child) {
+    margin-right: 10px;
+}
+
+.pokemon-card h3 {
+    margin-bottom: 5px;
+}
+
+.pokemon-card p {
+    margin-top: 5px;
+}
+

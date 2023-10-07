@@ -1,26 +1,30 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Navbar from './Navbar';
-import Pokedex from './Pokedex';
-import Regions from './Regions';
-import Moves from './Moves';
-import Learn from './About';
-import Contact from './ContactUs';
+import './App.css'
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Pokedex from './pages/Pokedex';
+import Regions from './pages/Regions';
+import Moves from './pages/Moves';
+import LearnMore from './pages/LearnMore';
+import ContactUs from './pages/ContactUs';
+
 
 function App() {
-    return (
-        <Router>
-            <Navbar />
-            <Switch>
-                <Route path="/pokedex" component={Pokedex} />
-                <Route path="/regiones" component={Regions} />
-                <Route path="/movimientos" component={Moves} />
-                <Route path="/aprende" component={Learn} />
-                <Route path="/contactanos" component={Contact} />
-                <Route path="/" exact component={Pokedex} /> {/* Página principal */}
-            </Switch>
-        </Router>
-    );
+  return (
+      <Router>
+          <div className='container'>
+          <Navbar />
+          <Routes>
+              <Route path="/pokedex" element={<Pokedex />} />
+              <Route path="/regions" element={<Regions />} />
+              <Route path="/moves" element={<Moves />} />
+              <Route path="/learnmore" element={<LearnMore />} />
+              <Route path="/contactus" element={<ContactUs />} />
+              <Route path="/" element={<Pokedex />} /> {/* Página principal */}
+          </Routes>
+          </div>
+      </Router>
+  );
 }
 
 export default App;
