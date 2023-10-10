@@ -13,7 +13,7 @@ function PokemonCard({ pokemon }) {
             <div className="pokemon-stats">
                 <span>HP: {pokemon.stats.find(stat => stat.stat.name === 'hp').base_stat}</span>
                 <span>W: {pokemon.weight} kg</span>
-                <span>H: {pokemon.height} m</span>
+                <span>H: {pokemon.height/10} m</span>
             </div>
             <div className="pokemon-types">
                 {pokemon.types.map(type => (

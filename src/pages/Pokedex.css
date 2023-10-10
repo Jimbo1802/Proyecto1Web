@@ -8,20 +8,23 @@
 
 .content-wrapper {
     display: flex;
-    flex-direction: column; /* Cambio a columna */
+    flex-direction: row; /* Cambia a fila */
+    justify-content: flex-start; /* Alinea los elementos al inicio */
     gap: 30px; /* Espacio entre los elementos */
     margin-top: 20px;
     width: 100%;
-    align-items: center; /* Centra los elementos hijos horizontalmente */
+    align-items: flex-start; /* Alinea los elementos al inicio en el eje vertical */
 }
 
+
+
 .filters-section {
-    width: 80%; /* Puedes ajustar este valor según lo que necesites */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; /* Evita que el contenedor se reduzca */
+    flex-grow: 0; /* Evita que el contenedor crezca */
+    /* ... el resto de tus estilos ... */
 }
+
+
 
 .pokemon-list {
     display: flex;
@@ -40,6 +43,11 @@
     margin-top: 20px;
     width: 100%; /* Ocupa todo el ancho disponible */
 }
+
+.results-wrapper {
+    flex-grow: 1; /* Permite que el contenedor crezca para ocupar el espacio restante */
+}
+
 
 
 
@@ -109,6 +117,9 @@
     gap: 10px;
     align-items: center;
 }
+.range-container input[type="number"] {
+    max-width: 80px; /* Ajusta este valor según tus preferencias */
+}
 
 .range-container label {
     display: flex;
@@ -116,6 +127,41 @@
     gap: 5px;
 }
 
+.height-filters {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.filter-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.height-filters label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.height-filters {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.filter-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.weight-filters label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
 
 
 

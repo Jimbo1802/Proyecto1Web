@@ -1,147 +1,165 @@
-// src/components/Pokedex.js
 import React, { useState, useEffect } from 'react';
 import PokemonCard from '../components/PokemonCard';
-import {fetchAllPokemons ,fetchPokemonByName, fetchPokemonsList, fetchPokemonsByType, fetchPokemonsByAbility, fetchPokemonTypes, fetchPokemonAbilities } from '../api/pokeapi';
+import {fetchAllPokemons ,fetchPokemonByName, fetchPokemonDetails, fetchPokemonsByType, fetchPokemonsByAbility, fetchPokemonTypes, fetchPokemonAbilities, getAllPokemons , getPokemonFilterData,getTestMessage} from '../api/pokeapi';
+
+
+
+
 import './Pokedex.css';
 import './searchBar.css'
 
-const Pokedex = () => {
+const Pokedex2 = () => {
+
+    const [allPokemons, setAllPokemons] = useState([]);
+    const [filteredPokemons, setFilteredPokemons] = useState([]);
+    const [displayPokemon, setDisplayPokemon] = useState([]);
+    const [detailPokemonList, setDetailPokemonList] = useState([]);
+    
+
     const [searchName, setSearchName] = useState('');
     const [pokemonTypes, setPokemonTypes] = useState([]);
     const [pokemonAbilities, setPokemonAbilities] = useState([]);
     const [selectedType, setSelectedType] = useState('');
     const [selectedAbility, setSelectedAbility] = useState('');
-    const [pokemons, setPokemons] = useState([]);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
-    const ITEMS_PER_PAGE = 15;
-    const [filteredPokemons, setFilteredPokemons] = useState(pokemons);
-    const [totalPages, setTotalPages] = useState(0);
     const [filtersActive, setFiltersActive] = useState(false);
     const [startRange, setStartRange] = useState(0);
     const [endRange, setEndRange] = useState(0);
     const [rangeMessage, setRangeMessage] = useState('');
+    const [isSmall, setIsSmall] = useState(false);
+    const [isMedium, setIsMedium] = useState(false);
+    const [isLarge, setIsLarge] = useState(false);
+    const [isLight, setIsLight] = useState(false);
+    const [isMiddle, setIsMiddle] = useState(false);
+    const [isHeavy, setIsHeavy] = useState(false);
 
+    const [detailsLoaded, setDetailsLoaded] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
+    const ITEMS_PER_PAGE = 9;
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
     
-
     useEffect(() => {
         async function fetchData() {
-            const [types, abilities] = await Promise.all([fetchPokemonTypes(), fetchPokemonAbilities()]);
+            const [types, abilities, pokemonsFromAPI] = await Promise.all([
+                fetchPokemonTypes(), 
+                fetchPokemonAbilities(), 
+                getAllPokemons(),
+            ]);
+            setAllPokemons(pokemonsFromAPI);
+            setFilteredPokemons(pokemonsFromAPI);
             setPokemonTypes(types.results);
             setPokemonAbilities(abilities.results);
+                  
         }
-        
         fetchData();
-        loadPokemonsByPage(1);
     }, []);
 
     useEffect(() => {
-        if (!filtersActive) {
-            loadPokemonsByPage(1);
-        }
-    }, [filtersActive]);
-    
-    
-    
-    
+        // Este efecto se ejecuta después de que se hayan actualizado todosPokemons y filteredPokemons
+        loadPokemonsByPage(1);
+    }, [allPokemons, filteredPokemons]);
 
-    const handleSearch = async () => {
-        if (searchName) {
-            const result = await fetchPokemonByName(searchName);
-            setPokemons([result]);
-        }
-    };
-
-    const fetchFilteredPokemons = async () => {
-        let resultsByType = [];
-        let resultsByAbility = [];
-        
-        // Filtrado por tipo
-        if (selectedType) {
-            const pokemonsByType = await fetchPokemonsByType(selectedType);
-            resultsByType = await Promise.all(pokemonsByType.map(p => fetchPokemonByName(p.pokemon.name)));
-        }
-        
-        // Filtrado por habilidad
-        if (selectedAbility) {
-            const pokemonsByAbility = await fetchPokemonsByAbility(selectedAbility);
-            resultsByAbility = await Promise.all(pokemonsByAbility.map(p => fetchPokemonByName(p.pokemon.name)));
-        }
-    
-        let combinedResults = [];
-    
-        // Combinación de resultados si ambos, tipo y habilidad, están seleccionados
-        if (selectedType && selectedAbility) {
-            combinedResults = resultsByType.filter(typePokemon => 
-                resultsByAbility.some(abilityPokemon => abilityPokemon.name === typePokemon.name)
-            );
-        } else if (selectedType) {
-            combinedResults = resultsByType;
-        } else if (selectedAbility) {
-            combinedResults = resultsByAbility;
-        } else {
-            // Si no hay tipo ni habilidad seleccionados, considera todos los Pokémon
-            // Si no hay tipo ni habilidad seleccionados, considera todos los Pokémon
-            const allPokemons = await fetchPokemonsList();
-            combinedResults = await Promise.all(allPokemons.results.map(pokemon => fetchPokemonByName(pokemon.name)));
-
-        }
-    
-        // Filtrado por rango (por ID en este caso)
-        if (startRange !== 0 || endRange !== 0) {
-            combinedResults = combinedResults.filter(pokemon => 
-                pokemon.id >= startRange && pokemon.id <= endRange
-            );
-        }
-    
-        return combinedResults;
-    };
-    
 
     const loadPokemonsByPage = async (page) => {
         try {
             const offset = (page - 1) * ITEMS_PER_PAGE;
-
-            if (filtersActive) {
-                const allFilteredPokemons = await fetchFilteredPokemons();
-                const paginatedPokemons = allFilteredPokemons.slice(offset, offset + ITEMS_PER_PAGE);
-                setPokemons(paginatedPokemons);
-                setTotalPages(Math.ceil(allFilteredPokemons.length / ITEMS_PER_PAGE));
-            } else {
-                const pokemonsList = await fetchPokemonsList(ITEMS_PER_PAGE, offset);
-                const detailedPokemons = await Promise.all(pokemonsList.results.map(pokemon => fetchPokemonByName(pokemon.name)));
-                setPokemons(detailedPokemons);
-                setTotalPages(Math.ceil(pokemonsList.count / ITEMS_PER_PAGE));
-            }
-
+            console.log("Lista",allPokemons);
+            const paginatedPokemons = filteredPokemons.slice(offset, offset + ITEMS_PER_PAGE);
+            const detailedPokemons = await Promise.all(paginatedPokemons.map(pokemon => fetchPokemonDetails(pokemon.name)));
+            setDisplayPokemon(detailedPokemons);
+            setTotalPages(Math.ceil(filteredPokemons.length / ITEMS_PER_PAGE));
             setCurrentPage(page);
         } catch (error) {
             console.error("Error al cargar los Pokémon:", error);
         }
     };
 
+    const handleSearch = async () => {
+        console.log("Pokemon a buscar", searchName)
+        if (searchName) {
+            let globalPokemon = allPokemons;
+            const result = globalPokemon.filter(pokemon =>pokemon.name === searchName);
+            console.log("Pokemon elegido", result)
+            setFilteredPokemons(result);
+            loadPokemonsByPage(1);
+        }
+    };
+
+    const fetchFilteredPokemons = async () => {
+        
+        let combinedResults = allPokemons
+        if (startRange !== 0 || endRange !== 0) {
+             // Extraer el ID de cada URL y filtrar por rango
+             combinedResults = combinedResults.filter(pokemon => {
+                const id = parseInt(pokemon.url.split("/")[pokemon.url.split("/").length - 2]);
+                return id >= startRange && id <= endRange;
+            });   
+        }
+
+        console.log("ListaFiltrada",combinedResults);
+        if (selectedType) {
+            const pokemonsByType = await fetchPokemonsByType(selectedType);
+            // Crear un conjunto de nombres de Pokémon para una búsqueda más rápida
+            const pokemonNamesByType = new Set(pokemonsByType.map(p => p.pokemon.name));
+            // Filtrar combinedResults2 basándose en los nombres de Pokémon
+            combinedResults = combinedResults.filter(pokemon => pokemonNamesByType.has(pokemon.name));
+        }
+        console.log("ListaFiltrada2",combinedResults);
+        // Filtrado por habilidad
+        if (selectedAbility) {
+            const pokemonsByAbility = await fetchPokemonsByAbility(selectedAbility);
+            const pokemonNamesByAbility = new Set(pokemonsByAbility.map(p => p.pokemon.name));
+            combinedResults = combinedResults.filter(pokemon => pokemonNamesByAbility.has(pokemon.name));
+        }
+        if(isSmall || isMedium || isLarge || isLight || isMiddle || isHeavy){
+            console.log("ListaFiltrada3",combinedResults);
+            // Guarda una copia de la lista original
+            const originalCombinedResults = [...combinedResults];
+            combinedResults = await getPokemonFilterData();
+            console.log("Paso1",combinedResults)
+            if (isSmall) {
+                combinedResults = combinedResults.filter(pokemon => pokemon.height <= 0.5);
+            }
+            if (isMedium) {
+        
+                combinedResults = combinedResults.filter(pokemon => pokemon.height > 0.5 && pokemon.height <= 1.5);
+            }
+            if (isLarge) {
+                combinedResults = combinedResults.filter(pokemon => pokemon.height > 1.5);
+            }
+            if (isLight) {
+                combinedResults = combinedResults.filter(pokemon => pokemon.weight <= 20);
+            }
+            if (isMiddle) {
+                combinedResults = combinedResults.filter(pokemon => pokemon.weight > 20 && pokemon.weight <= 60);
+            }
+            if (isHeavy) {
+                combinedResults = combinedResults.filter(pokemon => pokemon.weight > 60);
+            }
+            const pokemonNames = combinedResults.map(pokemon => pokemon.name);
+            combinedResults = originalCombinedResults.filter(pokemon => pokemonNames.includes(pokemon.name));
+        }
+       
+        return combinedResults
+    };
+
     const handleFilter = async () => {
-        // Verifica si no hay ningún filtro seleccionado
-        if (!selectedType && !selectedAbility && startRange === 0 && endRange === 0) {
+        const areFiltersInactive = !selectedType && !selectedAbility && (startRange === 0 && endRange === 0) && !isSmall && !isMedium && !isLarge && !isLight && !isMiddle && !isHeavy;
+        if(areFiltersInactive){
             setErrorMessage('Por favor, selecciona al menos un tipo, habilidad o define un rango antes de aplicar el filtro.');
             return;
-        }
-        // Si hay valores en el rango, muestra el mensaje del rango
-        if (startRange !== 0 || endRange !== 0) {
-            setRangeMessage(`Rango seleccionado: ${startRange} - ${endRange}`);
-        } else {
+        }else{
             setRangeMessage(''); // Limpia el mensaje del rango si no hay valores
+            setRangeMessage(`Rango seleccionado: ${startRange} - ${endRange}`);
+            const filteredResults = await fetchFilteredPokemons();
+            setFilteredPokemons(filteredResults);
+            //setPokemons(filteredResults.slice(0, ITEMS_PER_PAGE));
+            //setTotalPages(Math.ceil(filteredResults.length / ITEMS_PER_PAGE));
+            //setCurrentPage(1);
+            loadPokemonsByPage(1)
         }
-        const filteredResults = await fetchFilteredPokemons();
-        setFilteredPokemons(filteredResults);
-        setPokemons(filteredResults.slice(0, ITEMS_PER_PAGE));
-        setTotalPages(Math.ceil(filteredResults.length / ITEMS_PER_PAGE));
-        setCurrentPage(1);
-        setFiltersActive(true);
     };
-    
-    
 
     const handlePageChange = (direction) => {
         if (direction === 'next') {
@@ -150,8 +168,7 @@ const Pokedex = () => {
             loadPokemonsByPage(currentPage - 1);
         }
     };
-    
-    
+
     const clearFilters = async () => {
         setSelectedType('');
         setSelectedAbility('');
@@ -160,6 +177,13 @@ const Pokedex = () => {
         setStartRange(0);
         setEndRange(0);
         setFiltersActive(false);
+        setIsSmall(false);
+        setIsMedium(false);
+        setIsLarge(false);
+        setIsLight(false);
+        setIsMiddle(false);
+        setIsHeavy(false)
+        setFilteredPokemons(allPokemons)
         await loadPokemonsByPage(1);
     };
     
@@ -182,14 +206,14 @@ const Pokedex = () => {
                 {/* Filters */}
                 <div className="filters-section">
                     <select value={selectedType} onChange={(e) => setSelectedType(e.target.value)}>
-                        <option value="">Selecciona un tipo</option>
+                        <option value="">Tipo Pokemon</option>
                         {pokemonTypes.map(type => (
                             <option key={type.name} value={type.name}>{type.name}</option>
                         ))}
                     </select>
 
                     <select value={selectedAbility} onChange={(e) => setSelectedAbility(e.target.value)}>
-                        <option value="">Selecciona una habilidad</option>
+                        <option value=""> Habilidad Pokemon</option>
                         {pokemonAbilities.map(ability => (
                             <option key={ability.name} value={ability.name}>{ability.name}</option>
                         ))}
@@ -218,23 +242,84 @@ const Pokedex = () => {
                     </div>
                     <p>{rangeMessage}</p>
                     {errorMessage && <div className="error-message">{errorMessage}</div>}
+                    
+                    <div className="height-filters">
+                        <span className="filter-title">Filtro de Altura:</span>
+                            <label>
+                                <input 
+                                    type="checkbox" 
+                                    checked={isSmall} 
+                                    onChange={() => setIsSmall(!isSmall)} 
+                                />
+                                Small
+                            </label>
+                            <label>
+                                <input 
+                                    type="checkbox" 
+                                    checked={isMedium} 
+                                    onChange={() => setIsMedium(!isMedium)} 
+                                />
+                                Medium
+                            </label>
+                            <label>
+                                <input 
+                                    type="checkbox" 
+                                    checked={isLarge} 
+                                    onChange={() => setIsLarge(!isLarge)} 
+                                />
+                                Large
+                            </label>
+                    </div>
+                    
+                    <div className="weight-filters">
+                        <span className="filter-title">Filtro de Peso:</span>
+                        <label>
+                            <input 
+                                type="checkbox" 
+                                checked={isLight} 
+                                onChange={() => setIsLight(!isLight)} 
+                            />
+                            Light
+                        </label>
+                        <label>
+                            <input 
+                                type="checkbox" 
+                                checked={isMiddle} 
+                                onChange={() => setIsMiddle(!isMiddle)} 
+                            />
+                            Middle
+                        </label>
+                        <label>
+                            <input 
+                                type="checkbox" 
+                                checked={isHeavy} 
+                                onChange={() => setIsHeavy(!isHeavy)} 
+                            />
+                            Heavy
+                        </label>
+                    </div>
+
                     <button onClick={handleFilter}>Aplicar Filtros</button>
                     <button className="clear-filters-btn" onClick={clearFilters}>Limpiar Filtros</button>
                 </div>
 
-                {/* Results */}
-                <div className="pokemon-list">
-                    {pokemons.map(pokemon => (
-                        <PokemonCard key={pokemon.name} pokemon={pokemon} />
-                    ))}
-                </div>
-                <div className="pagination">
-                    <button onClick={() => handlePageChange('prev')} disabled={currentPage === 1}>Anterior</button>
-                    <span>Página {currentPage}</span>
-                    <button onClick={() => handlePageChange('next')} disabled={currentPage === totalPages}>Siguiente</button>
+                <div className="results-wrapper">
+                    
+                    {/* Results */}
+                    <div className="pokemon-list">
+                        {displayPokemon.map(pokemon => (
+                            <PokemonCard key={pokemon.name} pokemon={pokemon} />
+                        ))}
+                    </div>
+                    <div className="pagination">
+                        <button onClick={() => handlePageChange('prev')} disabled={currentPage === 1}>Anterior</button>
+                        <span>Página {currentPage}</span>
+                        <button onClick={() => handlePageChange('next')} disabled={currentPage === totalPages}>Siguiente</button>
+                    </div>
+
                 </div>
             </div>
         </div>
     );
 };
-export default Pokedex;
+export default Pokedex2;

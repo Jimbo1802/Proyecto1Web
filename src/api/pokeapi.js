@@ -2,11 +2,49 @@
 
 const BASE_URL = 'https://pokeapi.co/api/v2';
 
+const BASE_URL2 = 'http://127.0.0.1:5000';
+
+
+export const getAllPokemons = () => {
+    return fetch(`${BASE_URL2}/pokemons`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json().then(data => {
+                return data; // Luego, devuelves los datos
+            });
+        });
+};
+
+export const getPokemonFilterData = () => {
+    return fetch(`${BASE_URL2}/pokemons_filtered`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json().then(data => {
+                return data; // Luego, devuelves los datos
+            });
+        });
+};
+
+export const getTestMessage = () => {
+    return fetch(`${BASE_URL2}/test`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        });
+};
+
+
+
 export const fetchAllPokemons = async (url = 'https://pokeapi.co/api/v2/pokemon?limit=100') => {
     const response = await fetch(url);
     const data = await response.json();
     const pokemons = data.results;
-
     if (data.next) {
         const nextPokemons = await fetchAllPokemons(data.next);
         return pokemons.concat(nextPokemons);
@@ -15,9 +53,9 @@ export const fetchAllPokemons = async (url = 'https://pokeapi.co/api/v2/pokemon?
     }
 };
 
-export const fetchPokemonByName = async (name) => {
+export const fetchPokemonDetails = async (name) => {
     try {
-        const response = await fetch(`${BASE_URL}/pokemon/${name.toLowerCase()}`);
+        const response = await fetch(`${BASE_URL}/pokemon/${name}`);
         if (!response.ok) {
             throw new Error('No se encontró el Pokémon');
         }
@@ -27,7 +65,30 @@ export const fetchPokemonByName = async (name) => {
     }
 };
 
-export const fetchPokemonsList = async (limit = 10, offset = 0) => {
+
+export const fetchPokemonByName = async (name) => {
+    try {
+        const response = await fetch(`${BASE_URL}/pokemon/${name}`);
+        if (!response.ok) {
+            throw new Error('No se encontró el Pokémon');
+        }
+        const data = await response.json();
+        // Extraer sólo el nombre y peso del Pokémon
+        const result = {
+            name: data.name,
+            height: data.height/10,
+            weight: data.weight/10
+        };
+
+        return result;
+
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+export const fetchPokemonsList = async (limit = 9, offset = 0) => {
     try {
         const response = await fetch(`${BASE_URL}/pokemon?limit=${limit}&offset=${offset}`);
         if (!response.ok) {

@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css'
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Pokedex from './pages/Pokedex';
 import Regions from './pages/Regions';
@@ -16,7 +16,7 @@ function App() {
           <Navbar />
           <Routes>
               <Route path="/pokedex" element={<Pokedex />} />
-              <Route path="/regions" element={<Regions />} />
+              <Route path="/regions" element={<Pokedex />} />
               <Route path="/moves" element={<Moves />} />
               <Route path="/learnmore" element={<LearnMore />} />
               <Route path="/contactus" element={<ContactUs />} />
