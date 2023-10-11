@@ -1,0 +1,171 @@
+.pokedex-container {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra los elementos hijos horizontalmente */
+}
+
+.content-wrapper {
+    display: flex;
+    flex-direction: row; /* Cambia a fila */
+    justify-content: flex-start; /* Alinea los elementos al inicio */
+    gap: 30px; /* Espacio entre los elementos */
+    margin-top: 20px;
+    width: 100%;
+    align-items: flex-start; /* Alinea los elementos al inicio en el eje vertical */
+}
+
+
+
+.filters-section {
+    flex-shrink: 0; /* Evita que el contenedor se reduzca */
+    flex-grow: 0; /* Evita que el contenedor crezca */
+    /* ... el resto de tus estilos ... */
+}
+
+
+
+.pokemon-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Centra los Pokémon en el eje horizontal */
+    align-items: flex-start;
+    gap: 20px;
+    width: 100%; /* Ocupa todo el ancho disponible */
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%; /* Ocupa todo el ancho disponible */
+}
+
+.results-wrapper {
+    flex-grow: 1; /* Permite que el contenedor crezca para ocupar el espacio restante */
+}
+
+
+
+
+.pagination button {
+    padding: 10px 20px; /* Espacio interno del botón */
+    background-color: #007BFF; /* Color de fondo azul */
+    color: #ffffff; /* Color de texto blanco */
+    border: none; /* Sin bordes */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambia el cursor al pasar el ratón */
+    transition: background-color 0.3s; /* Transición suave al cambiar el color de fondo */
+}
+
+.pagination button:hover {
+    background-color: #0056b3; /* Color de fondo más oscuro al pasar el ratón */
+}
+
+.pagination button:disabled {
+    background-color: #b3c2d1; /* Color de fondo grisáceo para botones deshabilitados */
+    cursor: not-allowed; /* Cambia el cursor a "no permitido" */
+}
+
+.filters-section select {
+    width: 100%;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    max-width: 250px; /* o el valor que prefieras */
+    background-color: #f9f9f9;
+}
+
+.filters-section button {
+    padding: 10px 15px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.filters-section button:hover {
+    background-color: #0056b3;
+}
+
+.error-message {
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #ffe0e0;
+    color: #d00;
+    border-radius: 5px;
+}
+
+.filters-section .clear-filters-btn {
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+}
+
+.filters-section .clear-filters-btn:hover {
+    background-color: #f7f7f7;
+}
+.range-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.range-container input[type="number"] {
+    max-width: 80px; /* Ajusta este valor según tus preferencias */
+}
+
+.range-container label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.height-filters {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.filter-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.height-filters label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.height-filters {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.filter-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.weight-filters label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+
+
+
+
+
+

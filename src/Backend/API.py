@@ -90,3 +90,50 @@ def fetch_all_pokemons_and_details():
 
 
 
+
+
+
+def fetch_all_pokemons_and_details():
+    try:
+        response = requests.get(f"{BASE_URL}/pokemon?limit=1300")
+        response.raise_for_status()
+        data = response.json()
+        pokemons = data['results']
+
+        # Utilizar un ThreadPoolExecutor con 10 hilos (puedes ajustar este número)
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            # Mapear las solicitudes de detalles de Pokémon a los hilos
+            details = executor.map(fetch_pokemon_details, [pokemon['url'] for pokemon in pokemons])
+
+        return list(details)
+
+    except requests.RequestException as e:
+        raise Exception(f"Error al hacer la solicitud: {e}")
+
+
+
+def fetch_all_pokemons_location(pokemonId):
+    url='https://pokeapi.co/api/v2/pokemon/'+str(pokemonId)+'/encounters'
+    response = requests.get(url)
+    data = response.json()
+    # Inicializa una lista para almacenar los campos "location_area"
+    location_areas = []
+    # Itera a través de los diccionarios en la lista data
+    for item in data:
+        if 'location_area' in item:
+            location_areas.append(item['location_area']['name'])
+    
+    for location_area in location_areas:
+        print(location_area)
+    print("-------------")    
+    return location_areas
+"""
+    Imprime la lista de campos "location_area"
+    for location_area in location_areas:
+        print(location_area)
+    print("-------------")
+
+"""
+    
+
+

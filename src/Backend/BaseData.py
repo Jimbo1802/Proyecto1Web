@@ -22,6 +22,14 @@ def create_tables():
         height REAL NOT NULL,
         weight REAL NOT NULL
     )''')
+
+    # Creación de la tabla pokemons_Filtered_Data
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS pokemons_location_area (
+    location_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pokemon_id INTEGER,
+    location_name TEXT
+    )''')
         
     conn.commit()
     conn.close()
@@ -41,10 +49,8 @@ def insert_pokemons(pokemons):
 def get_all_pokemons():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-    
     cursor.execute('SELECT * FROM pokemons')
     pokemons = cursor.fetchall()
-    
     conn.close()
     return pokemons
 
@@ -84,5 +90,27 @@ def insert_pokemons_and_details(pokemons_and_details):
     conn.close()
 
 
+def get_all_pokemons_with_locations():
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT pokemon_id, location_name FROM pokemons_location_area ORDER BY pokemon_id
+        ''')
+    data = cursor.fetchall()
+    conn.close()
+    return data
 
 
+def insert_pokemons_location_area(pokemon_id, location_name):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO pokemons_location_area (pokemon_id, location_name) VALUES (?, ?)
+        ''', (pokemon_id, location_name))
+    conn.commit()
+    conn.close()
+
+
+
+
+    

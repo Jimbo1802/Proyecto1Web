@@ -12,6 +12,7 @@ def get_all_pokemons2():
     formatted_pokemons = []
     for pokemon_data in pokemons:
         formatted_pokemon = {
+            "pokemonId": pokemon_data[0],
             "name": pokemon_data[1],
             "url": pokemon_data[2]
         }
@@ -21,12 +22,11 @@ def get_all_pokemons2():
 
 @app.route('/pokemons_filtered', methods=['GET'])
 def get_all_pokemons_filtered():
-    print("entra1")
     pokemons_filtered = BaseData.get_all_pokemons_Filtered_Data()
-    print("entra2")
     formatted_pokemons_filtered = []
     for pokemon_data in pokemons_filtered:
         formatted_pokemon_filtered = {
+            "pokemonId": pokemon_data[0],
             "name": pokemon_data[1],
             "height": pokemon_data[2],
             "weight": pokemon_data[3]
@@ -34,6 +34,11 @@ def get_all_pokemons_filtered():
         formatted_pokemons_filtered.append(formatted_pokemon_filtered)
 
     return jsonify(formatted_pokemons_filtered)
+
+
+
+
+
 
 
 

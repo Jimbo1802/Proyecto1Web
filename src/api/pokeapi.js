@@ -40,6 +40,84 @@ export const getTestMessage = () => {
 };
 
 
+function romanToDecimal(roman) {
+    const romanNumeralMap = {
+      'i': 1,
+      'ii': 2,
+      'iii': 3,
+      'iv': 4,
+      'v': 5,
+      'vi': 6,
+      'vii': 7,
+      'viii': 8,
+      'ix': 9,
+      'x': 10
+    };
+    return romanNumeralMap[roman]
+  }
+  
+
+
+
+
+export const getPokemonDetails = async (name) => {
+    try {
+        // Obtener detalles básicos del Pokémon
+        const response = await fetch(`${BASE_URL}/pokemon/${name}`);
+        if (!response.ok) {
+            throw new Error('No se encontró el Pokémon');
+        }
+        const pokemonData = await response.json();
+
+        // Almacenar debilidades
+        let weaknesses = [];
+
+        // Para cada tipo del Pokémon, obten las relaciones de eficacia
+        for (const typeInfo of pokemonData.types) {
+            const typeResponse = await fetch(`${BASE_URL}/type/${typeInfo.type.name}`);
+            const typeData = await typeResponse.json();
+
+            // Buscar los tipos que son super efectivos contra este tipo de Pokémon
+            for (const damageRelation of typeData.damage_relations.double_damage_from) {
+                if (!weaknesses.includes(damageRelation.name)) {
+                    weaknesses.push(damageRelation.name);
+                }
+            }
+        }
+
+        // Agregar debilidades al objeto de datos
+        pokemonData.weaknesses = weaknesses;
+
+        // Obtener detalles de la especie del Pokémon para género y generación
+        const speciesResponse = await fetch(`${BASE_URL}/pokemon-species/${name}`);
+        if (!speciesResponse.ok) {
+            throw new Error('No se encontró información de especie del Pokémon');
+        }
+        const speciesData = await speciesResponse.json();
+
+        // Generación
+        const generationNumber = romanToDecimal(speciesData.generation.name.split('-')[1]); 
+        pokemonData.generation =generationNumber;
+
+        // Proporción de género
+        const malePercentage = speciesData.gender_rate * 12.5; // gender_rate es el ratio de género masculino. Se multiplica por 12.5 para obtener el porcentaje.
+        const femalePercentage = 100 - malePercentage;
+        pokemonData.gender = {
+            male: malePercentage,
+            female: femalePercentage
+        };
+
+        return pokemonData;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+
+
+
+
 
 export const fetchAllPokemons = async (url = 'https://pokeapi.co/api/v2/pokemon?limit=100') => {
     const response = await fetch(url);
@@ -137,6 +215,33 @@ export const fetchPokemonAbilities = async () => {
         throw error;
     }
 };
+
+export const fetchRegions = async () => {
+    try {
+        const response = await fetch(`${BASE_URL}/region`);
+        if (!response.ok) {
+            throw new Error('Error al obtener las regiones');
+        }
+        return await response.json();
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const fetchLocationsByRegion = async (regionName) => {
+    try {
+        const response = await fetch(`${BASE_URL}/region/${regionName}`);
+        if (!response.ok) {
+            throw new Error('Error al obtener las localidades de la región');
+        }
+        const data = await response.json();
+        return data.locations;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
 
 
 export const fetchPokemonsByAbility = async (ability) => {

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import PokemonCard from '../components/PokemonCard';
-import {fetchAllPokemons ,fetchPokemonByName, fetchPokemonDetails, fetchPokemonsByType, fetchPokemonsByAbility, fetchPokemonTypes, fetchPokemonAbilities, getAllPokemons , getPokemonFilterData,getTestMessage} from '../api/pokeapi';
+import PokemonCard from '../../components/PokemonCard';
+import {fetchAllPokemons ,fetchPokemonByName, fetchPokemonDetails, fetchPokemonsByType, fetchPokemonsByAbility, fetchPokemonTypes, fetchPokemonAbilities, getAllPokemons , getPokemonFilterData,getTestMessage} from '../../api/pokeapi';
 
 
 
 
 import './Pokedex.css';
-import './searchBar.css'
+import '../searchBar.css'
 
-const Pokedex2 = () => {
+const Pokedex = () => {
 
     const [allPokemons, setAllPokemons] = useState([]);
     const [filteredPokemons, setFilteredPokemons] = useState([]);
@@ -35,7 +35,7 @@ const Pokedex2 = () => {
     const [detailsLoaded, setDetailsLoaded] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
-    const ITEMS_PER_PAGE = 9;
+    const ITEMS_PER_PAGE = 18;
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     
@@ -251,7 +251,7 @@ const Pokedex2 = () => {
                                     checked={isSmall} 
                                     onChange={() => setIsSmall(!isSmall)} 
                                 />
-                                Small
+                                Pequeño
                             </label>
                             <label>
                                 <input 
@@ -259,7 +259,7 @@ const Pokedex2 = () => {
                                     checked={isMedium} 
                                     onChange={() => setIsMedium(!isMedium)} 
                                 />
-                                Medium
+                                Mediano
                             </label>
                             <label>
                                 <input 
@@ -267,7 +267,7 @@ const Pokedex2 = () => {
                                     checked={isLarge} 
                                     onChange={() => setIsLarge(!isLarge)} 
                                 />
-                                Large
+                                Alto
                             </label>
                     </div>
                     
@@ -279,7 +279,7 @@ const Pokedex2 = () => {
                                 checked={isLight} 
                                 onChange={() => setIsLight(!isLight)} 
                             />
-                            Light
+                            Ligero
                         </label>
                         <label>
                             <input 
@@ -287,7 +287,7 @@ const Pokedex2 = () => {
                                 checked={isMiddle} 
                                 onChange={() => setIsMiddle(!isMiddle)} 
                             />
-                            Middle
+                            Intermedio
                         </label>
                         <label>
                             <input 
@@ -295,7 +295,7 @@ const Pokedex2 = () => {
                                 checked={isHeavy} 
                                 onChange={() => setIsHeavy(!isHeavy)} 
                             />
-                            Heavy
+                            Pesado
                         </label>
                     </div>
 
@@ -322,4 +322,4 @@ const Pokedex2 = () => {
         </div>
     );
 };
-export default Pokedex2;
+export default Pokedex;

@@ -4,10 +4,10 @@ import { NavLink  } from 'react-router-dom';
 
 const navLinks = [
     { path: "/pokedex", label: "Pokedex" },
-    { path: "/regions", label: "Regions" },
-    { path: "/moves", label: "Moves" },
-    { path: "/learnmore", label: "Learn More" },
-    { path: "/contactus", label: "Contact Us" }
+    { path: "/regions", label: "Regiones" },
+    { path: "/moves", label: "Movimientos" },
+    { path: "/learnmore", label: "Aprende más" },
+    { path: "/contactus", label: "Contacto" }
   ];
   
 
