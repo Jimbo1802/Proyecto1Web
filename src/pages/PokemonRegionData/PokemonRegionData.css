@@ -1,0 +1,12 @@
+/* PokemonInfo.css */
+.pokemon-info {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid #e5e5e5;
+    border-radius: 5px;
+}
+
+.info-item {
+    font-size: 16px;
+}

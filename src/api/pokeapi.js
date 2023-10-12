@@ -60,7 +60,7 @@ function romanToDecimal(roman) {
 
 
 
-export const getPokemonDetails = async (name) => {
+  export const getPokemonDetails = async (name) => {
     try {
         // Obtener detalles básicos del Pokémon
         const response = await fetch(`${BASE_URL}/pokemon/${name}`);
@@ -71,47 +71,272 @@ export const getPokemonDetails = async (name) => {
 
         // Almacenar debilidades
         let weaknesses = [];
-
-        // Para cada tipo del Pokémon, obten las relaciones de eficacia
         for (const typeInfo of pokemonData.types) {
             const typeResponse = await fetch(`${BASE_URL}/type/${typeInfo.type.name}`);
             const typeData = await typeResponse.json();
-
-            // Buscar los tipos que son super efectivos contra este tipo de Pokémon
             for (const damageRelation of typeData.damage_relations.double_damage_from) {
                 if (!weaknesses.includes(damageRelation.name)) {
                     weaknesses.push(damageRelation.name);
                 }
             }
         }
-
-        // Agregar debilidades al objeto de datos
         pokemonData.weaknesses = weaknesses;
 
-        // Obtener detalles de la especie del Pokémon para género y generación
+        
+        // Sprites
+        pokemonData.sprites = {
+            profile: pokemonData.sprites?.other?.['official-artwork'].front_default,
+            front: pokemonData.sprites.front_default,
+            back: pokemonData.sprites.back_default,
+            front_shiny: pokemonData.sprites.front_shiny,
+            back_shiny: pokemonData.sprites.back_shiny
+        }
+
+        console.log("Imagenes", pokemonData.sprites)
+
+        // Obtener detalles de la especie del Pokémon para género, generación y descripción
         const speciesResponse = await fetch(`${BASE_URL}/pokemon-species/${name}`);
         if (!speciesResponse.ok) {
             throw new Error('No se encontró información de especie del Pokémon');
         }
         const speciesData = await speciesResponse.json();
 
-        // Generación
+        // Generación y Ratio de Género
         const generationNumber = romanToDecimal(speciesData.generation.name.split('-')[1]); 
-        pokemonData.generation =generationNumber;
-
-        // Proporción de género
-        const malePercentage = speciesData.gender_rate * 12.5; // gender_rate es el ratio de género masculino. Se multiplica por 12.5 para obtener el porcentaje.
+        pokemonData.generation = generationNumber;
+        const malePercentage = speciesData.gender_rate * 12.5;
         const femalePercentage = 100 - malePercentage;
         pokemonData.gender = {
             male: malePercentage,
             female: femalePercentage
         };
 
+        // Descripción del Pokémon
+        const pokedexEntry = speciesData.flavor_text_entries.find(entry => entry.language.name === 'es');
+        if (pokedexEntry) {
+            pokemonData.description = pokedexEntry.flavor_text;
+        } else {
+            pokemonData.description = "Descripción no disponible";
+        }
+
+        // Cadena de Evolución
+        const evolutionResponse = await fetch(speciesData.evolution_chain.url);
+        const evolutionData = await evolutionResponse.json();
+        pokemonData.evolutionChain = [];
+        let currentEvolution = evolutionData.chain;
+        while (currentEvolution) {
+            pokemonData.evolutionChain.push({
+                species_name: currentEvolution.species.name,
+                evolves_to: currentEvolution.evolves_to.map(evo => evo.species.name),
+                evolution_details: currentEvolution.evolves_to.map(evo => evo.evolution_details[0])
+            });
+            currentEvolution = currentEvolution.evolves_to[0];
+        }
+
         return pokemonData;
     } catch (error) {
         throw error;
     }
 };
+
+
+
+export const getPokemonDetailsRegions = async (name) => {
+    try {
+        // Obtener detalles básicos del Pokémon
+        const response = await fetch(`${BASE_URL}/pokemon/${name}`);
+        if (!response.ok) {
+            throw new Error('No se encontró el Pokémon');
+        }
+        const pokemonData = await response.json();
+
+        // Almacenar debilidades
+        let weaknesses = [];
+        for (const typeInfo of pokemonData.types) {
+            const typeResponse = await fetch(`${BASE_URL}/type/${typeInfo.type.name}`);
+            const typeData = await typeResponse.json();
+            for (const damageRelation of typeData.damage_relations.double_damage_from) {
+                if (!weaknesses.includes(damageRelation.name)) {
+                    weaknesses.push(damageRelation.name);
+                }
+            }
+        }
+        pokemonData.weaknesses = weaknesses;
+
+        // Sprites
+        pokemonData.sprites = {
+            profile: pokemonData.sprites?.other?.['official-artwork'].front_default,
+        }
+
+        // Después de obtener los detalles básicos del Pokémon...
+        console.log("Lugares", pokemonData.location_area_encounters)
+        const locationResponse = await fetch(pokemonData.location_area_encounters);
+        if (!locationResponse.ok) {
+            throw new Error('No se encontraron áreas de encuentro para el Pokémon');
+        }
+        const locationData = await locationResponse.json();
+        
+        pokemonData.locations = locationData.map(location => ({
+            location: location.location_area.name.split('-').join(' '), // Convertir nombres como "pallet-town" a "pallet town"
+            methods: location.version_details[0].encounter_details.map(detail => detail.method.name) // Esto asume que sólo estás interesado en la primera versión detallada.
+        }));
+
+
+        console.log("Imagenes", pokemonData.sprites)
+
+        // Obtener detalles de la especie del Pokémon para género, generación y descripción
+        const speciesResponse = await fetch(`${BASE_URL}/pokemon-species/${name}`);
+        if (!speciesResponse.ok) {
+            throw new Error('No se encontró información de especie del Pokémon');
+        }
+        const speciesData = await speciesResponse.json();
+        // Tasa de Captura
+        pokemonData.captureRate = speciesData.capture_rate;
+        // Hábitat
+        pokemonData.habitat = speciesData.habitat ? speciesData.habitat.name : "Desconocido";
+
+        // Generación y Ratio de Género
+        const generationNumber = romanToDecimal(speciesData.generation.name.split('-')[1]); 
+        pokemonData.generation = generationNumber;
+        const malePercentage = speciesData.gender_rate * 12.5;
+        const femalePercentage = 100 - malePercentage;
+        pokemonData.gender = {
+            male: malePercentage,
+            female: femalePercentage
+        };
+
+        // Descripción del Pokémon
+        const pokedexEntry = speciesData.flavor_text_entries.find(entry => entry.language.name === 'es');
+        if (pokedexEntry) {
+            pokemonData.description = pokedexEntry.flavor_text;
+        } else {
+            pokemonData.description = "Descripción no disponible";
+        }
+
+        // Cadena de Evolución
+        const evolutionResponse = await fetch(speciesData.evolution_chain.url);
+        const evolutionData = await evolutionResponse.json();
+        pokemonData.evolutionChain = [];
+        let currentEvolution = evolutionData.chain;
+        while (currentEvolution) {
+            pokemonData.evolutionChain.push({
+                species_name: currentEvolution.species.name,
+                evolves_to: currentEvolution.evolves_to.map(evo => evo.species.name),
+                evolution_details: currentEvolution.evolves_to.map(evo => evo.evolution_details[0])
+            });
+            currentEvolution = currentEvolution.evolves_to[0];
+        }
+
+        return pokemonData;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+export const getPokemonDetailsMoves = async (name) => {
+    try {
+        // Obtener detalles básicos del Pokémon
+        const response = await fetch(`${BASE_URL}/pokemon/${name}`);
+        if (!response.ok) {
+            throw new Error('No se encontró el Pokémon');
+        }
+        const pokemonData = await response.json();
+
+        // Almacenar debilidades
+        let weaknesses = [];
+        for (const typeInfo of pokemonData.types) {
+            const typeResponse = await fetch(`${BASE_URL}/type/${typeInfo.type.name}`);
+            const typeData = await typeResponse.json();
+            for (const damageRelation of typeData.damage_relations.double_damage_from) {
+                if (!weaknesses.includes(damageRelation.name)) {
+                    weaknesses.push(damageRelation.name);
+                }
+            }
+        }
+        pokemonData.weaknesses = weaknesses;
+       
+        // Mapea usando el objeto original
+        pokemonData.movesDetailed = pokemonData.moves.map(move => ({
+            name: move.move?.name,
+            learnMethod: move.version_group_details[0]?.move_learn_method?.name, 
+            levelLearnedAt: move.version_group_details[0]?.level_learned_at 
+        }));
+        
+
+        // Sprites
+        pokemonData.sprites = {
+            profile: pokemonData.sprites?.other?.['official-artwork'].front_default,
+        }
+
+        // Después de obtener los detalles básicos del Pokémon...
+        console.log("Lugares", pokemonData.location_area_encounters)
+        const locationResponse = await fetch(pokemonData.location_area_encounters);
+        if (!locationResponse.ok) {
+            throw new Error('No se encontraron áreas de encuentro para el Pokémon');
+        }
+        const locationData = await locationResponse.json();
+        
+        pokemonData.locations = locationData.map(location => ({
+            location: location.location_area.name.split('-').join(' '), // Convertir nombres como "pallet-town" a "pallet town"
+            methods: location.version_details[0].encounter_details.map(detail => detail.method.name) // Esto asume que sólo estás interesado en la primera versión detallada.
+        }));
+
+
+        console.log("Imagenes", pokemonData.sprites)
+
+        // Obtener detalles de la especie del Pokémon para género, generación y descripción
+        const speciesResponse = await fetch(`${BASE_URL}/pokemon-species/${name}`);
+        if (!speciesResponse.ok) {
+            throw new Error('No se encontró información de especie del Pokémon');
+        }
+        const speciesData = await speciesResponse.json();
+        // Tasa de Captura
+        pokemonData.captureRate = speciesData.capture_rate;
+        // Hábitat
+        pokemonData.habitat = speciesData.habitat ? speciesData.habitat.name : "Desconocido";
+
+        // Generación y Ratio de Género
+        const generationNumber = romanToDecimal(speciesData.generation.name.split('-')[1]); 
+        pokemonData.generation = generationNumber;
+        const malePercentage = speciesData.gender_rate * 12.5;
+        const femalePercentage = 100 - malePercentage;
+        pokemonData.gender = {
+            male: malePercentage,
+            female: femalePercentage
+        };
+
+        // Descripción del Pokémon
+        const pokedexEntry = speciesData.flavor_text_entries.find(entry => entry.language.name === 'es');
+        if (pokedexEntry) {
+            pokemonData.description = pokedexEntry.flavor_text;
+        } else {
+            pokemonData.description = "Descripción no disponible";
+        }
+
+        // Cadena de Evolución
+        const evolutionResponse = await fetch(speciesData.evolution_chain.url);
+        const evolutionData = await evolutionResponse.json();
+        pokemonData.evolutionChain = [];
+        let currentEvolution = evolutionData.chain;
+        while (currentEvolution) {
+            pokemonData.evolutionChain.push({
+                species_name: currentEvolution.species.name,
+                evolves_to: currentEvolution.evolves_to.map(evo => evo.species.name),
+                evolution_details: currentEvolution.evolves_to.map(evo => evo.evolution_details[0])
+            });
+            currentEvolution = currentEvolution.evolves_to[0];
+        }
+
+        return pokemonData;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+
+
 
 
 

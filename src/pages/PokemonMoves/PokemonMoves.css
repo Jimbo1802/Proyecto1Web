@@ -1,0 +1,36 @@
+/* PokemonMoves.css */
+.moves-container {
+    margin: 20px 0;
+    padding: 20px;
+    
+    justify-content: flex-start; /* Alinea los elementos al inicio del contenedor */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.moves-container h2 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.moves-container ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.move-detail {
+    padding: 10px;
+    border-bottom: 1px dashed #ddd;
+    margin-bottom: 10px;
+}
+
+.move-detail:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.move-detail p {
+    margin: 5px 0;
+}

@@ -5,32 +5,31 @@ const PokemonDetailCard = ({ pokemonDetails }) => {
   return (
     <div className="pokemon-details-container">
       <img
-        src={pokemonDetails?.sprites?.other?.['official-artwork']?.front_default}
+        src={pokemonDetails.sprites.profile}
         alt={pokemonDetails.name}
         className="pokemonImage"
       />
 
       <div className="pokemonDetails">
         <p>
-          <strong>Name:</strong> {pokemonDetails.name}
+            Name: <strong>{pokemonDetails.name.charAt(0).toUpperCase() + pokemonDetails.name.slice(1).toLowerCase()}</strong>
         </p>
         <p>
-          <strong>Generation:</strong> {pokemonDetails.generation}
+          Generation: <strong>{pokemonDetails.generation}</strong>
         </p>
-
         <div className="dimensions">
           <p>
-            <strong>Weight:</strong> {pokemonDetails.weight / 10} Kg
+            Weight:<strong>{pokemonDetails.weight / 10} Kg </strong>
           </p>
           <p>
-            <strong>Height:</strong> {pokemonDetails.height / 10} M
+            Height:<strong>{pokemonDetails.height / 10} M </strong>
           </p>
         </div>
 
         <div className="genderInfo">
           <p>
-            <strong>Gender:</strong> {pokemonDetails.gender.male}% Male,{' '}
-            {pokemonDetails.gender.female}% Female
+            Gender:<strong>{pokemonDetails.gender.male}% Male,{' '}
+            {pokemonDetails.gender.female}% Female</strong>
           </p>
         </div>
       </div>

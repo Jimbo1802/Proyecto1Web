@@ -1,0 +1,38 @@
+
+/* PokemonDescription.css */
+.PokemonGeneralInfo {
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.PokemonGeneralInfo strong {
+    display: block;
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 25px;  /* Aumentado el tamaño de la fuente */
+}
+
+.PokemonGeneralInfo p {
+    margin-bottom: 25px;
+    color: #555;
+    font-size: 20px;  /* Aumentado el tamaño de la fuente */
+}
+
+.PokemonGeneralInfo ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.PokemonGeneralInfo li {
+    margin-bottom: 15px;
+    color: #666;
+    font-size: 20px;  /* Aumentado el tamaño de la fuente */
+}
+
+.PokemonGeneralInfo li > div {
+    font-size: 20px;  /* Aumentado el tamaño de la fuente */
+    color: #888;
+}

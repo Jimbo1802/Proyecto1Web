@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getPokemonDetails } from '../../api/pokeapi';
+import { getPokemonDetailsRegions } from '../../api/pokeapi';
 import PokemonType from '..//PokemonType/PokemonType';
 import PokemonDetailCard from '../PokemonDetailCard/PokemonDetailCard';
 import PokemonGeneralInfo from '../PokemonGeneralInfo/PokemonGeneralInfo';  // Ajusta la ruta según donde hayas guardado el archivo
 import PokemonSprites from '../PokemonSprites/PokemonSprites';
-import './PokemonDetail.css';
+import PokemonInfo from '../PokemonRegionData/PokemonRegionData';  // Ajusta la ruta según donde hayas guardado el archivo
+import PokemonLocation from '../PokemonLocations/PokemonLocations';
+import './PokemonDetailRegion.css';
 
 
 
@@ -19,7 +21,7 @@ const PokemonDetail = () => {
 
     useEffect(() => {
         async function fetchDetails() {
-            const details = await getPokemonDetails(name);
+            const details = await getPokemonDetailsRegions(name);
             console.log(details)
             setPokemonDetails(details);
         }
@@ -74,8 +76,9 @@ const PokemonDetail = () => {
               description={pokemonDetails.description}
               evolutionChain={pokemonDetails.evolutionChain}
           />
-          <h2>Pokemon Sprites</h2>
-          <PokemonSprites sprites={pokemonDetails.sprites} />
+          <PokemonInfo captureRate={pokemonDetails.captureRate} habitat={pokemonDetails.habitat} />
+          <PokemonLocation locations={pokemonDetails.locations} />
+
 
         </div>
       </div>    

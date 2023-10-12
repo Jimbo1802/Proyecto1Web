@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import PokemonCard from '../../components/PokemonCard';
+import PokemonCard from '../../components/PokemonCardRegion/PokemonCardRegion';
 import {fetchAllPokemons ,fetchPokemonByName, fetchPokemonDetails, fetchPokemonsByType, fetchPokemonsByAbility, fetchPokemonTypes, fetchPokemonAbilities, getAllPokemons , getPokemonFilterData,getTestMessage} from '../../api/pokeapi';
 
 

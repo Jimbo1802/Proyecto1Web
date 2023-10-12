@@ -1,0 +1,28 @@
+/* HistoryPage.css */
+.history-container {
+    max-width: 80%;
+    margin: 50px auto;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
+}
+
+.history-container h1 {
+    text-align: center;
+    color: #3b4cca;
+    margin-bottom: 30px;
+}
+
+.history-container h2 {
+    color: #e95d0f;
+    margin-top: 20px;
+    border-bottom: 2px solid #e95d0f;
+    padding-bottom: 10px;
+}
+
+.history-container p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-top: 15px;
+}

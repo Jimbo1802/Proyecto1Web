@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import PokemonCard from '../../components/PokemonCard';
+import PokemonCardMoves from '../PokemonCardMoves/PokemonCardMoves';
 import {fetchAllPokemons ,fetchPokemonByName, fetchPokemonDetails, fetchPokemonsByType, fetchPokemonsByAbility, fetchPokemonTypes, fetchPokemonAbilities, getAllPokemons , getPokemonFilterData,getTestMessage} from '../../api/pokeapi';
 
 
@@ -308,7 +308,7 @@ const Moves = () => {
                     {/* Results */}
                     <div className="pokemon-list">
                         {displayPokemon.map(pokemon => (
-                            <PokemonCard key={pokemon.name} pokemon={pokemon} />
+                            <PokemonCardMoves key={pokemon.name} pokemon={pokemon} />
                         ))}
                     </div>
                     <div className="pagination">
